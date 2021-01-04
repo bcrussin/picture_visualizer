@@ -6,6 +6,9 @@ var elements = {}
 window.addEventListener("mouseup", dropClone);
 window.addEventListener("mousemove", updateClone);
 
+window.addEventListener("touchend", dropClone);
+window.addEventListener("touchmove", updateClone);
+
 var frames = [
     {
         name: "large",
@@ -94,6 +97,7 @@ function addImagesToPalette() {
         var elem = new Image();
         elem.src = frame.src;
         elem.addEventListener('mousedown', createClone);
+        elem.addEventListener('touchstart', createClone);
         elem.draggable = false;
         if(isLandscape) {
             elem.style.width = (frame.width * elements.palette.clientWidth * 0.045) + "px";
@@ -113,12 +117,17 @@ function resizeImage(img) {
 }
 
 function createClone(e) {
-    var imgName = e.path[0].id;
+    var imgName;
+    if(e.type === "touchstart") {
+        e = e.touches[0];
+        imgName = e.target.id;
+    } else {
+        imgName = e.path[0].id;
+    }
+
     var img = getFrame(imgName);
 
     var rect = elements[imgName].getBoundingClientRect();
-    //var dx = e.clientX - rect.x + PADDING;
-    //var dy = e.clientY - rect.y;
     var dx = e.clientX;
     var dy = e.clientY;
     console.log(imgName)
@@ -146,10 +155,14 @@ function dropClone() {
 }
 
 function translateClone(x, y) {
-    clone.style.transform = "translate(" + x + "px, " + y + "px)";
+    if(clone != null) {
+        clone.style.transform = "translate(" + x + "px, " + y + "px)";
+    }
 }
 
 function updateClone(e) {
+    if(e.type === "touchmove") e = e.touches[0];
+    
     translateClone(e.clientX, e.clientY);
 }
 
