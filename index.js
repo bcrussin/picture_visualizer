@@ -293,7 +293,7 @@ function dropClone(e) {
             clone.addEventListener("mouseup", rotateClone);
             //clone.addEventListener("dblclick", rotateClone);
             clone.addEventListener("touchstart", pickUpClone, { passive: false });
-            clone.addEventListener("touchend", rotateClone, { passive: false });
+            //clone.addEventListener("touchend", rotateClone, { passive: false });
         }
     }
     
@@ -371,6 +371,7 @@ function clearWorkspace() {
 }
 
 function changeBackground() {
+    clearWorkspace();
     addBackground(elements.bkgSelector.value);
 }
 
