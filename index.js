@@ -1,4 +1,4 @@
-const DBL_CLICK = 300;
+const DBL_CLICK = 400;
 
 var clone = null;
 var cloneOffset = [0, 0];
@@ -8,6 +8,7 @@ var screenRatio;
 var isLandscape;
 var elements = {}
 
+var dragPosStart;
 var lastClick = Date.now();
 var firstResize = true;
 
@@ -223,6 +224,7 @@ function pickUpClone(e) {
     if(e.type === "touchstart") {
         e = e.touches[0];
         clone = e.target;
+        dragPosStart = [e.clientX, e.clientY];
     } else {
         clone = e.path[0];
     }
@@ -256,7 +258,6 @@ function dropClone(e) {
         var cloneRect = clone.getBoundingClientRect();
         if(e.clientX < validRect.x || e.clientX + cloneRect.width > validRect.x + validRect.width) isValid = false;
         if(e.clientY < validRect.y || e.clientY + cloneRect.height > validRect.y + validRect.height) isValid = false;
-        console.log(e.clientY)
 
         if(!isValid) {
             document.body.removeChild(clone);
@@ -264,8 +265,8 @@ function dropClone(e) {
             clone.addEventListener("mousedown", pickUpClone);
             clone.addEventListener("mouseup", mouseUpClone);
             //clone.addEventListener("dblclick", rotateClone);
-            clone.addEventListener("touchstart", pickUpClone);
-            clone.addEventListener("touchend", mouseUpClone);
+            clone.addEventListener("touchstart", pickUpClone, { passive: false });
+            clone.addEventListener("touchend", rotateClone, { passive: false });
         }
     }
     
@@ -312,8 +313,19 @@ function updateClone(e) {
 
 function rotateClone(e) {
     e.preventDefault();
+    console.log(dragPosStart);
+    if(e.type === "touchend") {
+        e = e.changedTouches[0];
+        console.log(e.clientX + ", " + e.clientY)
+        if(Math.abs(e.clientX - dragPosStart[0]) > 10 || Math.abs(e.clientY - dragPosStart[1] > 10)) {
+            return;
+        }
+        clone = e.target;
+    } else {
+        clone = e.path[0];
+    }
 
-    clone = e.path[0];
+    
     var rot = getRotFromTransform(clone.style.transform);
     if(rot === "0") rot = "90";
     else rot = "0";
