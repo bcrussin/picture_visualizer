@@ -286,8 +286,8 @@ function dropClone(e) {
         var isValid = true;
         var validRect = elements.background.getBoundingClientRect();
         var cloneRect = clone.getBoundingClientRect();
-        if(e.clientX < validRect.x || e.clientX + cloneRect.width > validRect.x + validRect.width) isValid = false;
-        if(e.clientY < validRect.y || e.clientY + cloneRect.height > validRect.y + validRect.height) isValid = false;
+        if(cloneRect.x < validRect.x || cloneRect.x + cloneRect.width > validRect.x + validRect.width) isValid = false;
+        if(cloneRect.y < validRect.y || cloneRect.y + cloneRect.height > validRect.y + validRect.height) isValid = false;
 
         if(!isValid) {
             document.body.removeChild(clone);
