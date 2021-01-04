@@ -135,6 +135,8 @@ function resizeWindow() {
         unfade(elements.tooltip);
         setTimeout(hideTooltip, 5000);
     }
+
+    window.scrollTo(0, 0);
 }
 
 function addImagesToPalette() {
