@@ -162,7 +162,7 @@ function resizeWindow(showTooltip) {
         setTimeout(hideTooltip, 5000);
     }
 
-    window.scrollTo(0, 1);
+    //window.scrollTo(0, 1);
 }
 
 function addImagesToPalette() {
