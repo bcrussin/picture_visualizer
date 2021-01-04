@@ -117,6 +117,8 @@ function resizeImage(img) {
 }
 
 function createClone(e) {
+    e.preventDefault();
+
     var imgName;
     if(e.type === "touchstart") {
         e = e.touches[0];
@@ -161,6 +163,7 @@ function translateClone(x, y) {
 }
 
 function updateClone(e) {
+    e.preventDefault();
     if(e.type === "touchmove") e = e.touches[0];
     
     translateClone(e.clientX, e.clientY);
