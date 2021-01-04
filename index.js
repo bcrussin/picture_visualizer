@@ -156,7 +156,7 @@ function resizeWindow(showTooltip) {
 
     if(firstResize) {
         firstResize = false;
-    } else if(showTooltip) {
+    } else if(showTooltip && document.getElementsByClassName("clone").length > 0) {
         elements.tooltip.style.display = "inline-flex";
         //unfade(elements.tooltip);
         setTimeout(hideTooltip, 5000);
