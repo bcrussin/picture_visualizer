@@ -319,7 +319,7 @@ function rotateClone(e) {
     if(e.type === "touchend") {
         e = e.changedTouches[0];
         console.log(e.clientX + ", " + e.clientY)
-        if(Math.abs(e.clientX - dragPosStart[0]) > 10 || Math.abs(e.clientY - dragPosStart[1] > 10)) {
+        if(Math.abs(e.clientX - dragPosStart[0]) > 1 || Math.abs(e.clientY - dragPosStart[1] > 1)) {
             return;
         }
         clone = e.target;
