@@ -22,6 +22,11 @@ window.addEventListener("mousemove", updateClone);
 window.addEventListener("touchend", dropClone, { passive: false });
 window.addEventListener("touchmove", updateClone, { passive: false });
 
+window.addEventListener("dragstart", function(e) {
+    e.preventDefault();
+    return false;
+});
+
 var currentBackground;
 var backgrounds = [
     {
@@ -203,12 +208,12 @@ function addBackground(name) {
 
 function createClone(e) {
     var imgName;
+    console.log(e);
     if(e.type === "touchstart") {
         e = e.touches[0];
-        imgName = e.target.id;
-    } else {
-        imgName = e.path[0].id;
     }
+    
+    imgName = e.target.id;
 
     var img = getFrame(imgName);
 
@@ -220,6 +225,7 @@ function createClone(e) {
     clone = new Image();
     clone.src = img.src;
     clone.className = "clone";
+    //clone.setAttribute('draggable', false);
 
     var r = elements.background.width / getBackground(currentBackground).width;
     var w = (r * getFrame(imgName).width) + "px";
@@ -247,11 +253,10 @@ function pickUpClone(e) {
     
     if(e.type === "touchstart") {
         e = e.touches[0];
-        clone = e.target;
-    } else {
-        clone = e.path[0];
     }
     
+    clone = e.target;
+
     dragPosStart = [e.clientX, e.clientY];
 
     cloneIndex = clone.style.zIndex;
@@ -339,10 +344,9 @@ function updateClone(e) {
 function rotateClone(e) {
     if(e.type === "touchend") {
         e = e.changedTouches[0];
-        clone = e.target;
-    } else {
-        clone = e.path[0];
     }
+    
+    clone = e.target;
 
     if(Math.abs(e.clientX - dragPosStart[0]) > 1 || Math.abs(e.clientY - dragPosStart[1] > 1)) {
         return;
