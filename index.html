@@ -3,6 +3,7 @@
     <head>
         <title>Picture Visualizer</title>
         <link rel="stylesheet" type="text/css" href="index.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
@@ -10,6 +11,15 @@
             <div id="palette"></div>
             <div id="workspace"></div>
         </div>
+
+        <div id="options">
+            <button id="clear" onclick="clearWorkspace()" ontouchstart="clearWorkspace()">Clear</button>
+            <span class="horizontal">
+                <p>Background: </p>
+                <select id="backgroundSelector" onchange="changeBackground()"></select>
+            </span>
+        </div>
+        <button id="optionsButton" class="material-icons" onclick="toggleOptions()" ontouchstart="toggleOptions()">settings</button>
 
         <span id="tooltip">
             Your screen size has been changed. <br/> Things may not look right until you change it back :( 
