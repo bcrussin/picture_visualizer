@@ -13,7 +13,7 @@ var lastClick = Date.now();
 var firstResize = true;
 
 window.addEventListener("touchstart", function(e) {
-    e.preventDefault();
+    //e.preventDefault();
 }, { passive: false });
 
 window.addEventListener("mouseup", dropClone);
@@ -380,6 +380,7 @@ function hideTooltip() {
 }
 
 function toggleOptions() {
+    console.log(1)
     if(elements.options.style.display === "none") {
         elements.options.style.display = "inline-flex";
     } else {
