@@ -157,8 +157,8 @@ function resizeWindow(showTooltip) {
     if(firstResize) {
         firstResize = false;
     } else if(showTooltip) {
-        //elements.tooltip.style.display = "inline-flex";
-        unfade(elements.tooltip);
+        elements.tooltip.style.display = "inline-flex";
+        //unfade(elements.tooltip);
         setTimeout(hideTooltip, 5000);
     }
 
@@ -373,8 +373,8 @@ function changeBackground() {
 }
 
 function hideTooltip() {
-    //elements.tooltip.style.display = "none";
-    fade(elements.tooltip);
+    elements.tooltip.style.display = "none";
+    //fade(elements.tooltip);
 }
 
 function toggleOptions() {
@@ -386,10 +386,12 @@ function toggleOptions() {
 }
 
 // https://stackoverflow.com/a/6121270/14934860
+var timer;
 function fade(element) {
     var op = 1;  // initial opacity
     element.style.opacity = op;
-    var timer = setInterval(function () {
+    clearInterval(timer);
+    timer = setInterval(function () {
         if (op <= 0.1){
             clearInterval(timer);
             element.style.display = 'none';
@@ -404,7 +406,8 @@ function unfade(element) {
     var op = 0.1;  // initial opacity
     element.style.opacity = op;
     element.style.display = 'inline-flex';
-    var timer = setInterval(function () {
+    clearInterval(timer);
+    timer = setInterval(function () {
         if (op >= 1){
             clearInterval(timer);
         }
