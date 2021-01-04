@@ -26,6 +26,7 @@ body {
     border: 3px solid black;
     border-radius: 5px;
     font-size: auto;
+    z-index: 999;
 }
 
 #optionsButton {
@@ -43,7 +44,7 @@ body {
     font-size: auto;
     outline: none;
     cursor:pointer;
-    z-index: 999;
+    z-index: 998;
 }
 
 #options {
@@ -58,7 +59,7 @@ body {
     width: 300px;
     border: 2px solid black;
     background-color: white;
-    z-index: 998
+    z-index: 997;
 }
 
 #clear {
