@@ -1,6 +1,10 @@
+var clone = null;
 var screenRatio;
 var isLandscape;
 var elements = {}
+
+window.addEventListener("mouseup", dropClone);
+window.addEventListener("mousemove", updateClone);
 
 var frames = [
     {
@@ -28,6 +32,16 @@ var frames = [
         height: 17.9375,
     }
 ]
+
+function getFrame(name) {
+    for(frame of frames) {
+        if(frame.name == name) {
+            return frame;
+        }
+    }
+
+    return null;
+}
 
 function init() {
     elements.wrapper = document.getElementById("wrapper");
@@ -61,9 +75,6 @@ function resizeWindow() {
         elements.wrapper.style.flexDirection = "column";
         elements.palette.style.flexDirection = "row";
 
-        var r = elements.workspace.clientWidth / elements.workspace.clientHeight;
-        
-
         if(screenRatio > 1.1) {
             elements.background.style.maxHeight = elements.workspace.clientHeight + "px";
             elements.background.style.maxWidth = (elements.workspace.clientWidth * 1.333) + "px";
@@ -82,6 +93,8 @@ function addImagesToPalette() {
     for(let frame of frames) {
         var elem = new Image();
         elem.src = frame.src;
+        elem.addEventListener('mousedown', createClone);
+        elem.draggable = false;
         if(isLandscape) {
             elem.style.width = (frame.width * elements.palette.clientWidth * 0.045) + "px";
         } else {
@@ -90,12 +103,54 @@ function addImagesToPalette() {
         elem.id = frame.name;
         elem.class = "frame";
         elements.palette.appendChild(elem);
+        elements[frame.name] = document.getElementById(frame.name);
     }
 }
 
 function resizeImage(img) {
     img.width = 10;
     img.height = 10;
+}
+
+function createClone(e) {
+    var imgName = e.path[0].id;
+    var img = getFrame(imgName);
+
+    var rect = elements[imgName].getBoundingClientRect();
+    //var dx = e.clientX - rect.x + PADDING;
+    //var dy = e.clientY - rect.y;
+    var dx = e.clientX;
+    var dy = e.clientY;
+    console.log(imgName)
+    console.log(dx + ", " + dy);
+    clone = new Image();
+    clone.src = img.src;
+    clone.id = "clone";
+    Object.assign(clone.style, {
+        position: "absolute",
+        //left: dx + "px",
+        //top: dy + "px",
+        left: 0,
+        top: 0,
+        transform: "translate(" + dx + "px, " + dy + "px)",
+        width: "20%"
+    });
+
+    document.body.appendChild(clone);
+}
+
+function dropClone() {
+    console.log('bye clone')
+    document.body.removeChild(clone);
+    clone = null;
+}
+
+function translateClone(x, y) {
+    clone.style.transform = "translate(" + x + "px, " + y + "px)";
+}
+
+function updateClone(e) {
+    translateClone(e.clientX, e.clientY);
 }
 
 init();
