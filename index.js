@@ -257,7 +257,7 @@ function pickUpClone(e) {
     dragPosStart = [e.clientX, e.clientY];
 
     cloneIndex = clone.style.zIndex;
-    clone.style.zIndex = 1000;
+    clone.style.zIndex = 500;
     var rect = clone.getBoundingClientRect();
     cloneOffset = [e.clientX - rect.x, e.clientY - rect.y];
 }
