@@ -222,9 +222,7 @@ function createClone(e) {
     clone.className = "clone";
 
     var r = elements.background.width / getBackground(currentBackground).width;
-    console.log(r)
     var w = (r * getFrame(imgName).width) + "px";
-    console.log(w)
 
     Object.assign(clone.style, {
         position: "absolute",
@@ -364,7 +362,6 @@ function clearWorkspace() {
     while(clones.length > 0) {
         clones = document.getElementsByClassName("clone");
         for(let i = 0; i < clones.length; i++) {
-            console.log(clones.item(i));
             document.body.removeChild(clones.item(i));
         }
     }
@@ -381,7 +378,6 @@ function hideTooltip() {
 }
 
 function toggleOptions() {
-    console.log(1)
     if(elements.options.style.display === "none") {
         elements.options.style.display = "inline-flex";
     } else {
