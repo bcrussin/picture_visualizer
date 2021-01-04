@@ -3,22 +3,18 @@
     <head>
         <title>Picture Visualizer</title>
         <link rel="stylesheet" type="text/css" href="index.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
         <div id="wrapper">
-            <div id="palette">
-                <!--<image class="frame" id="large" src="../frames/largeFrame.png"></image>
-                <br/>
-                <image class="frame" id="medium" src="../frames/mediumFrame.png"></image>
-                <br/>
-                <image class="frame" id="small" src="../frames/smallFrame.png"></image>
-                <br/>
-                <image class="frame" id="crusse" src="../frames/crusseFrame.png"></image>-->
-            </div>
-            <div id="workspace">
-                <image id="background" src="backgrounds/livingRoomLarge.JPG"></image>
-            </div>
+            <div id="palette"></div>
+            <div id="workspace"></div>
         </div>
+
+        <span id="tooltip">
+            Your screen size has been changed. <br/> Things may not look right until you change it back :( 
+            <button id="closeTooltip" onclick="hideTooltip()">X</button>
+        </span>
 
         <script src="index.js"></script>
     </body>
