@@ -22,17 +22,33 @@ window.addEventListener("mousemove", updateClone);
 window.addEventListener("touchend", dropClone, { passive: false });
 window.addEventListener("touchmove", updateClone, { passive: false });
 
+var currentBackground;
 var backgrounds = [
+    {
+        name: "livingRoomSmall",
+        src: "backgrounds/livingRoomSmall.JPG",
+        width: 6448
+    },
     {
         name: "livingRoomMedium",
         src: "backgrounds/livingRoomMedium.JPG",
-        width: 8640 //12181
+        width: 8640
     },
     {
         name: "livingRoomLarge",
         src: "backgrounds/livingRoomLarge.JPG",
         width: 12181
-    }
+    },
+    {
+        name: "diningRoomDark",
+        src: "backgrounds/diningRoomDark.JPG",
+        width: 14697
+    },
+    {
+        name: "diningRoomLight",
+        src: "backgrounds/diningRoomLight.JPG",
+        width: 14938
+    },
 ]
 
 function getBackground(name) {
@@ -88,14 +104,24 @@ function init() {
     elements.palette = document.getElementById("palette");
     elements.workspace = document.getElementById("workspace");
     elements.tooltip = document.getElementById("tooltip");
+    elements.options = document.getElementById("options");
+    elements.bkgSelector = document.getElementById("backgroundSelector");
 
     elements.tooltip.style.display = "none";
+    elements.options.style.display = "none";
 
-    addBackground("livingRoomLarge");
+    for(bkg of backgrounds) {
+        var option = document.createElement("option");
+        option.text = bkg.name;
+        elements.bkgSelector.add(option);
+    }
+
+    elements.bkgSelector.value = "livingRoomMedium";
+    addBackground("livingRoomMedium");
 }
 
 window.addEventListener('resize', resizeWindow);
-function resizeWindow() {
+function resizeWindow(showTooltip) {
     screenRatio = window.innerWidth / window.innerHeight;
     if(screenRatio > 1.6) {
         isLandscape = true;
@@ -130,7 +156,7 @@ function resizeWindow() {
 
     if(firstResize) {
         firstResize = false;
-    } else {
+    } else if(showTooltip) {
         //elements.tooltip.style.display = "inline-flex";
         unfade(elements.tooltip);
         setTimeout(hideTooltip, 5000);
@@ -162,22 +188,20 @@ function addImagesToPalette() {
 
 function addBackground(name) {
     var bkg = getBackground(name);
+    if(elements.background !== null) {
+        elements.workspace.removeChild(elements.background)
+    }
     elements.background = new Image();
     elements.background.src = bkg.src;
     elements.background.id = "background";
     elements.workspace.appendChild(elements.background);
 
-    resizeWindow();
-}
+    currentBackground = name;
 
-function resizeImage(img) {
-    img.width = 10;
-    img.height = 10;
+    resizeWindow(false);
 }
 
 function createClone(e) {
-    e.preventDefault();
-
     var imgName;
     if(e.type === "touchstart") {
         e = e.touches[0];
@@ -195,10 +219,12 @@ function createClone(e) {
     //console.log(dx + ", " + dy);
     clone = new Image();
     clone.src = img.src;
-    //clone.id = "clone";
+    clone.className = "clone";
 
-    var r = elements.background.width / backgrounds[0].width;
+    var r = elements.background.width / getBackground(currentBackground).width;
+    console.log(r)
     var w = (r * getFrame(imgName).width) + "px";
+    console.log(w)
 
     Object.assign(clone.style, {
         position: "absolute",
@@ -216,8 +242,6 @@ function createClone(e) {
 }
 
 function pickUpClone(e) {
-    e.preventDefault();
-
     /*if(e.detail > 1) {
         clone = null;
         return;
@@ -226,10 +250,11 @@ function pickUpClone(e) {
     if(e.type === "touchstart") {
         e = e.touches[0];
         clone = e.target;
-        dragPosStart = [e.clientX, e.clientY];
     } else {
         clone = e.path[0];
     }
+    
+    dragPosStart = [e.clientX, e.clientY];
 
     cloneIndex = clone.style.zIndex;
     clone.style.zIndex = 1000;
@@ -237,7 +262,7 @@ function pickUpClone(e) {
     cloneOffset = [e.clientX - rect.x, e.clientY - rect.y];
 }
 
-function mouseUpClone(e) {
+/*function mouseUpClone(e) {
     var dt = Date.now() - lastClick;
     if(dt > 0 && dt < DBL_CLICK) {
         rotateClone(e);
@@ -246,7 +271,7 @@ function mouseUpClone(e) {
     }
     lastClick -= DBL_CLICK;
     lastClick = Date.now();
-}
+}*/
 
 function dropClone(e) {
     if(e.type === "touchend") {
@@ -265,7 +290,7 @@ function dropClone(e) {
             document.body.removeChild(clone);
         } else {
             clone.addEventListener("mousedown", pickUpClone);
-            clone.addEventListener("mouseup", mouseUpClone);
+            clone.addEventListener("mouseup", rotateClone);
             //clone.addEventListener("dblclick", rotateClone);
             clone.addEventListener("touchstart", pickUpClone, { passive: false });
             clone.addEventListener("touchend", rotateClone, { passive: false });
@@ -314,17 +339,15 @@ function updateClone(e) {
 }
 
 function rotateClone(e) {
-    e.preventDefault();
-    console.log(dragPosStart);
     if(e.type === "touchend") {
         e = e.changedTouches[0];
-        console.log(e.clientX + ", " + e.clientY)
-        if(Math.abs(e.clientX - dragPosStart[0]) > 1 || Math.abs(e.clientY - dragPosStart[1] > 1)) {
-            return;
-        }
         clone = e.target;
     } else {
         clone = e.path[0];
+    }
+
+    if(Math.abs(e.clientX - dragPosStart[0]) > 1 || Math.abs(e.clientY - dragPosStart[1] > 1)) {
+        return;
     }
 
     
@@ -336,9 +359,32 @@ function rotateClone(e) {
     clone = null;
 }
 
+function clearWorkspace() {
+    var clones = document.getElementsByClassName("clone");
+    while(clones.length > 0) {
+        clones = document.getElementsByClassName("clone");
+        for(let i = 0; i < clones.length; i++) {
+            console.log(clones.item(i));
+            document.body.removeChild(clones.item(i));
+        }
+    }
+}
+
+function changeBackground() {
+    addBackground(elements.bkgSelector.value);
+}
+
 function hideTooltip() {
     //elements.tooltip.style.display = "none";
     fade(elements.tooltip);
+}
+
+function toggleOptions() {
+    if(elements.options.style.display === "none") {
+        elements.options.style.display = "inline-flex";
+    } else {
+        elements.options.style.display = "none";
+    }
 }
 
 // https://stackoverflow.com/a/6121270/14934860
