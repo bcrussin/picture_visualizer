@@ -125,6 +125,34 @@ function init() {
     addBackground("livingRoomMedium");
 }
 
+function saveData() {
+    localStorage.clear();
+    var clones = document.getElementsByClassName("clone");
+    var data = [];
+    for(let i = 0; i < clones.length; i++) {
+        var clone = clones.item(i);
+        data[i] = {};
+        data[i].name = clone.classList[0] + ""//.remove("clone")[0];
+        var transform = clone.style.transform;
+        data[i].x = getPosFromTransform(transform)[0];
+        data[i].y = getPosFromTransform(transform)[1];
+        data[i].rot = getRotFromTransform(transform);
+        console.log(data[i].name);
+    }
+    localStorage.setItem('data', JSON.stringify(data));
+}
+
+function loadData() {
+    clearWorkspace();
+    var data = JSON.parse(localStorage.getItem('data'));
+    console.log(data);
+    for(let i = 0; i < data.length; i++) {
+        console.log(data[i].rot)
+        addClone(data[i].name, data[i].x, data[i].y, data[i].rot, false);
+    }
+    hideOptions();
+}
+
 window.addEventListener('resize', resizeWindow);
 function resizeWindow(showTooltip) {
     screenRatio = window.innerWidth / window.innerHeight;
@@ -212,23 +240,35 @@ function createClone(e) {
     if(e.type === "touchstart") {
         e = e.touches[0];
     }
-    
-    imgName = e.target.id;
 
-    var img = getFrame(imgName);
-
-    var rect = elements[imgName].getBoundingClientRect();
+    //var rect = elements[imgName].getBoundingClientRect();
     var dx = e.clientX;
     var dy = e.clientY;
+
+    addClone(e.target.id, dx, dy, 0, true);
+}
+
+function addClone(name, x, y, rot, current) {
+
+    var img = getFrame(name);
+    console.log(x + ", " + y);
     //console.log(imgName)
     //console.log(dx + ", " + dy);
     clone = new Image();
     clone.src = img.src;
-    clone.className = "clone";
+    clone.className = name + " clone";
     //clone.setAttribute('draggable', false);
+    
+    clone.addEventListener("mousedown", pickUpClone);
+    clone.addEventListener("mouseup", rotateClone);
+    //clone.addEventListener("dblclick", rotateClone);
+    clone.addEventListener("touchstart", pickUpClone, { passive: false });
+    //clone.addEventListener("touchend", rotateClone, { passive: false });
 
     var r = elements.background.width / getBackground(currentBackground).width;
-    var w = (r * getFrame(imgName).width) + "px";
+    var w = (r * getFrame(name).width) + "px";
+
+    rot = rot || 0;
 
     Object.assign(clone.style, {
         position: "absolute",
@@ -236,13 +276,16 @@ function createClone(e) {
         //top: dy + "px",
         left: 0,
         top: 0,
-        transform: "translate(" + dx + "px, " + dy + "px)",
+        transform: "translate(" + x + "px, " + y + "px) rotate(" + rot + "deg)",
         width: w
     });
 
+    console.log(getPosFromTransform(clone.style.transform));
     document.body.appendChild(clone);
 
     cloneOffset = [0, 0];
+
+    if(!current) clone = null;
 }
 
 function pickUpClone(e) {
@@ -291,12 +334,6 @@ function dropClone(e) {
 
         if(!isValid) {
             document.body.removeChild(clone);
-        } else {
-            clone.addEventListener("mousedown", pickUpClone);
-            clone.addEventListener("mouseup", rotateClone);
-            //clone.addEventListener("dblclick", rotateClone);
-            clone.addEventListener("touchstart", pickUpClone, { passive: false });
-            clone.addEventListener("touchend", rotateClone, { passive: false });
         }
     }
     
@@ -389,6 +426,10 @@ function toggleOptions() {
     }
 }
 
+function hideOptions() {
+    elements.options.style.display = "none";
+}
+
 // https://stackoverflow.com/a/6121270/14934860
 var timer;
 function fade(element) {
@@ -420,6 +461,19 @@ function unfade(element) {
         op += op * 0.1;
     }, 10);
 }
+// ____________________________________________
+
+// https://stackoverflow.com/a/3955096/14934860
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
 // ____________________________________________
 
 init();
