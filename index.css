@@ -73,6 +73,11 @@ body {
     height: 10vh;
 }
 
+#save #load {
+    height: 5vh;
+    width: 50%;
+}
+
 #backgroundSelector {
     width: 100%;
     color: black;
