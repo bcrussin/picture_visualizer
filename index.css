@@ -14,9 +14,10 @@ body {
 }
 
 .horizontal {
-    display: inline-flex;
+    display: flex;
     flex-direction: row;
     gap: 5px;
+    height: 10vh;
 }
 
 #tooltip {
@@ -69,15 +70,6 @@ body {
     font-size: 20px;
 }
 
-#clear {
-    height: 10vh;
-}
-
-#save #load {
-    height: 5vh;
-    width: 50%;
-}
-
 #backgroundSelector {
     width: 100%;
     color: black;
@@ -88,6 +80,10 @@ button {
     color: black;
     border-radius: 5px;
     outline: none;
+}
+
+#save, #load, #clear {
+    flex-grow: 1;
 }
 
 #closeTooltip {
