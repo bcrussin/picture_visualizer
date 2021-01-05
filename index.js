@@ -406,6 +406,7 @@ function clearWorkspace() {
             document.body.removeChild(clones.item(i));
         }
     }
+    hideOptions();
 }
 
 function changeBackground() {
