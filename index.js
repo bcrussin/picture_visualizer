@@ -140,6 +140,7 @@ function saveData() {
         console.log(data[i].name);
     }
     localStorage.setItem('data', JSON.stringify(data));
+    hideOptions();
 }
 
 function loadData() {
